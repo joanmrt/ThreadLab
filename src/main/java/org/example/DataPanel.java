@@ -11,12 +11,20 @@ public class DataPanel extends JTable {
     public DataPanel(View view){
         this.view = view;
 
-        String[] columnNamesData = {"Nombre", "Valor"};
+        String[] columnNamesData = {"Dato", "Valor"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         JScrollPane scrollPane = new JScrollPane(this);
-        tableModel.addRow(new Object[]{"Quantity", view.getController().getModel().getResources().getQuantity()});
-        //this.add(scrollPane);
+        tableModel.addRow(new Object[]{"Total Resources", this.view.getController().getModel().getResources().getQuantity()});
+        tableModel.addRow(new Object[]{"Total Consumers", 0});
+        tableModel.addRow(new Object[]{"Total Producers", 0});
+        tableModel.addRow(new Object[]{"Active Threads", 0});
+        tableModel.addRow(new Object[]{"Total Time (ms)", 0});
+
         this.setModel(tableModel);
+
+        // Customizacion
+        this.getTableHeader().setBackground(new Color(248, 110, 240));
+        this.setRowHeight(30);
         this.setMinimumSize(new Dimension(300,200));
     }
 }

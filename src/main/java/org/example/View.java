@@ -56,7 +56,7 @@ public class View extends JFrame implements Runnable {
 
 
         // Data Viewer
-        c.weightx = 0.2; //0.2
+        c.weightx = 0.1; //0.2
         c.weighty = 1;
         c.gridy = 0;
         c.gridx = 0;
@@ -65,7 +65,7 @@ public class View extends JFrame implements Runnable {
 
         //Conifg Panel
 
-        c.weightx = 0.2; // 0.2
+        c.weightx = 0.1; // 0.2
         c.weighty = 1;
         c.gridy = 0;
         c.gridx = 1;
@@ -137,7 +137,7 @@ public class View extends JFrame implements Runnable {
         c.weighty = 0;
         c.gridx = 0;
         c.gridy = 1;
-        c.gridwidth = 2;
+        c.gridwidth = 5;
         c.ipady = 0;
         c.fill = NONE;
         c.anchor = LAST_LINE_START;

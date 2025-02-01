@@ -9,9 +9,13 @@ public class ConsumerPanel extends JTable {
         String[] columnNamesData = {"Nombre", "Valor"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         JScrollPane scrollPane = new JScrollPane(this);
-        //tableModel.addRow(new Object[]{"Quantity",controller.getModel().getResources().getQuantity()});
-        //this.add(scrollPane);
+
+
+
         this.setModel(tableModel);
+
+        this.getTableHeader().setBackground(new Color(110, 128, 248));
+        this.setRowHeight(30);
         this.setMinimumSize(new Dimension(300,200));
     }
 }

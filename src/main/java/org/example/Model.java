@@ -22,6 +22,14 @@ public class Model {
         this.configurationPropertiesDTO = new ConfigurationPropertiesDTO();
     }
 
+    public void play(){
+
+    }
+
+    public void stop(){
+
+    }
+
     public Controller getController() {
         return controller;
     }

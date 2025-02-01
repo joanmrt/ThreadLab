@@ -9,9 +9,14 @@ public class ProducerPanel extends JTable {
         String[] columnNamesData = {"Nombre", "Valor"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         JScrollPane scrollPane = new JScrollPane(this);
-        //tableModel.addRow(new Object[]{"Quantity",controller.getModel().getResources().getQuantity()});
-        //this.add(scrollPane);
+
+
+
+
         this.setModel(tableModel);
+
+        this.getTableHeader().setBackground(new Color(248, 110, 110));
+        this.setRowHeight(30);
         this.setMinimumSize(new Dimension(300,200));
     }
 }
