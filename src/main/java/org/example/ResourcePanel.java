@@ -6,10 +6,9 @@ import java.awt.*;
 
 public class ResourcePanel extends JTable {
     public ResourcePanel(){
-        String[] columnNamesData = {"Nombre", "Valor"};
+        String[] columnNamesData = {"Resource ID", "Quantity", "MinQ", "MaxQ", "Consumer num", "Producer num", "Underflow", "Overflow", "State"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         JScrollPane scrollPane = new JScrollPane(this);
-
 
 
         this.setModel(tableModel);

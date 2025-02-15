@@ -3,8 +3,10 @@ package org.example;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 
 import static java.awt.GridBagConstraints.*;
+
 
 public class View extends JFrame implements Runnable {
 
@@ -60,6 +62,7 @@ public class View extends JFrame implements Runnable {
         c.weighty = 1;
         c.gridy = 0;
         c.gridx = 0;
+        c.gridheight=3;
         c.fill = BOTH;
         this.add(new JScrollPane(this.dataPanel), c);
 
@@ -69,33 +72,37 @@ public class View extends JFrame implements Runnable {
         c.weighty = 1;
         c.gridy = 0;
         c.gridx = 1;
+        c.gridheight=3;
         c.fill = BOTH;
         this.add(new JScrollPane(this.configurationPanel), c);
-
-        // Consumer Panel
-
-        c.weightx = 0.2; // 0.2
-        c.weighty = 1;
-        c.gridy = 0;
-        c.gridx = 2;
-        c.fill = BOTH;
-        this.add(new JScrollPane(this.consumerPanel), c);
 
         // ResourcesPanel
 
         c.weightx = 0.2; // 0.2
         c.weighty = 1;
         c.gridy = 0;
-        c.gridx = 3;
+        c.gridx = 2;
+        c.gridheight=1;
         c.fill = BOTH;
         this.add(new JScrollPane(this.resourcePanel), c);
+
+        // Consumer Panel
+
+        c.weightx = 0.2; // 0.2
+        c.weighty = 1;
+        c.gridy = 1;
+        c.gridx = 2;
+        c.gridheight=1;
+        c.fill = BOTH;
+        this.add(new JScrollPane(this.consumerPanel), c);
 
         // Producer Panel
 
         c.weightx = 0.2; // 0.2
         c.weighty = 1;
-        c.gridy = 0;
-        c.gridx = 4;
+        c.gridy = 2;
+        c.gridx = 2;
+        c.gridheight=1;
         c.fill = BOTH;
         this.add(new JScrollPane(this.producerPanel), c);
 
@@ -106,11 +113,20 @@ public class View extends JFrame implements Runnable {
         JButton playButton = this.controlPanel.getPlay();
         playButton.addActionListener(e -> {
             System.out.println("Play button clicked!");
-            this.viewer.setBackground(Color.GREEN);
+
             Thread thread = new Thread(controller.getModel().getProducer());
             Thread thread1 = new Thread(controller.getModel().getConsumer());
             thread.start();
             thread1.start();
+            try {
+                this.controller.setDTOParams();
+            }
+            catch (Exception exceptionPlay){
+                System.out.println("Error trying to start model "+ exceptionPlay);
+            }
+
+            this.controller.getModel().play();
+            updateTables();
         });
         c.weightx = 0;
         c.weighty = 0;
@@ -127,16 +143,20 @@ public class View extends JFrame implements Runnable {
             System.out.println("Stop button clicked!");
             this.viewer.setBackground(Color.RED);
             System.out.println(controller.getModel().getResources().getQuantity());
+            System.out.println(Integer.parseInt(this.getConfigurationPanel().getValueAt(0,1).toString()));
+            clearTables();
         });
         c.gridy = 0;
         c.gridx = 1;
         this.controlPanel.add(stopButton,c);
 
+
+
         // Añadir Panel de botones al panel principal
         c.weightx = 1;
         c.weighty = 0;
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 3;
         c.gridwidth = 5;
         c.ipady = 0;
         c.fill = NONE;
@@ -151,6 +171,36 @@ public class View extends JFrame implements Runnable {
         this.setBounds(500,200, 1000,800);
         this.setVisible(true);
 
+    }
+
+    private void updateTables() {
+        //Update Resources
+        ArrayList<ResourceType> arrayList = this.controller.getModel().getResourceTypesList();
+        DefaultTableModel tableModelResource = (DefaultTableModel) this.resourcePanel.getModel();
+
+        for (ResourceType resourceType : arrayList){
+            Object[] rowData = {resourceType.getId(),
+                    resourceType.getQuantity(),
+                    resourceType.getMinQuantity(),
+                    resourceType.getMaxQuantity(),
+                    0,
+                    0,
+                    resourceType.getUnderflow(),
+                    resourceType.getOverflow(),
+                    resourceType.getState()};
+            tableModelResource.addRow(rowData);
+        }
+    }
+
+    private void clearTables(){
+        DefaultTableModel tableModelResource = (DefaultTableModel) this.resourcePanel.getModel();
+        tableModelResource.setRowCount(0);
+
+        DefaultTableModel tableModelConsumer = (DefaultTableModel) this.consumerPanel.getModel();
+        tableModelConsumer.setRowCount(0);
+
+        DefaultTableModel tableModelProducer = (DefaultTableModel) this.producerPanel.getModel();
+        tableModelProducer.setRowCount(0);
     }
 
     @Override
@@ -172,5 +222,9 @@ public class View extends JFrame implements Runnable {
 
     public Controller getController() {
         return controller;
+    }
+
+    public ConfigurationPanel getConfigurationPanel() {
+        return configurationPanel;
     }
 }

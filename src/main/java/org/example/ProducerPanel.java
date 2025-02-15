@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class ProducerPanel extends JTable {
     public ProducerPanel(){
-        String[] columnNamesData = {"Nombre", "Valor"};
+        String[] columnNamesData = {"Producer ID", "Bound Resource", "Status", "Start Delay", "Produce Delay","Times produced", "Processing Time", "Life Cycles", "Start Time", "End Time"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         JScrollPane scrollPane = new JScrollPane(this);
 

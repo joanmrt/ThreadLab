@@ -6,6 +6,7 @@ public class Producer implements Runnable{
 
     private Model model;
     private Enum<Thread.State> stateEnum;
+    private ResourceType resourceType;
     public Producer(Model model){
         this.model = model;
     }

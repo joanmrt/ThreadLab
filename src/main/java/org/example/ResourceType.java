@@ -1,24 +1,28 @@
 package org.example;
 
 public class ResourceType {
+    private Model model;
+    private int id;
 
     private int quantity = 0;
     private int maxQuantity;
     private int minQuantity;
 
-    private String name;
+    private int quantityConsumed;
 
-    public ResourceType(){
+    private int underflow;
+
+    private int overflow;
+    private String state;
+
+    public ResourceType(Model model, int id){
+        this.model = model;
+        this.id = id;
+        this.maxQuantity = this.model.getConfigurationPropertiesDTO().getMaxQuantity();
+        this.minQuantity = this.model.getConfigurationPropertiesDTO().getMinQuantity();
 
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getQuantity() {
         return quantity;
@@ -42,6 +46,30 @@ public class ResourceType {
 
     public void setMinQuantity(int minQuantity) {
         this.minQuantity = minQuantity;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getQuantityConsumed() {
+        return quantityConsumed;
+    }
+
+    public int getUnderflow() {
+        return underflow;
+    }
+
+    public int getOverflow() {
+        return overflow;
+    }
+
+    public String getState() {
+        return state;
     }
 
     public void addResources(){

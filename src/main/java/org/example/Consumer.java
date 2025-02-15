@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 public class Consumer implements Runnable{
 
     private Model model;
+    private ResourceType resourceType;
 
     public Consumer(Model model){
         this.model = model;
@@ -18,7 +19,6 @@ public class Consumer implements Runnable{
         for (int i=0; i<10000; i++){
 
             try {
-                //consume();
                 model.getResources().removeResources();
                 sleep(1);
             } catch (InterruptedException e) {

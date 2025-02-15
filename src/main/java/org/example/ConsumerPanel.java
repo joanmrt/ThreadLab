@@ -6,11 +6,9 @@ import java.awt.*;
 
 public class ConsumerPanel extends JTable {
     public ConsumerPanel(){
-        String[] columnNamesData = {"Nombre", "Valor"};
+        String[] columnNamesData = {"Consumer ID", "Bound Resource", "Status", "Start Delay", "Consume Delay","Times consumed", "Processing Time", "Life Cycles", "Start Time", "End Time"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         JScrollPane scrollPane = new JScrollPane(this);
-
-
 
         this.setModel(tableModel);
 
