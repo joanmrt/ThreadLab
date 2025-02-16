@@ -250,6 +250,7 @@ public class View extends JFrame implements Runnable {
             tableModelProducer.setValueAt(producer.getState(),producer.getId()-1,2);
             tableModelProducer.setValueAt(producer.getProduceDelay(),producer.getId()-1,4);
             tableModelProducer.setValueAt(producer.getTimesProduced(),producer.getId()-1,5);
+            tableModelProducer.setValueAt(producer.getLifeCycles(),producer.getId()-1,6);
             tableModelProducer.setValueAt(producer.getStartTime(),producer.getId()-1,7);
             tableModelProducer.setValueAt(producer.getEndTime(),producer.getId()-1,8);
 
@@ -265,6 +266,7 @@ public class View extends JFrame implements Runnable {
             tableModelConsumer.setValueAt(consumer.getState(),consumer.getId()-1,2);
             tableModelConsumer.setValueAt(consumer.getConsumeDelay(),consumer.getId()-1,4);
             tableModelConsumer.setValueAt(consumer.getTimesConsumed(),consumer.getId()-1,5);
+            tableModelConsumer.setValueAt(consumer.getLifeCycles(),consumer.getId()-1,6);
             tableModelConsumer.setValueAt(consumer.getStartTime(),consumer.getId()-1,7);
             tableModelConsumer.setValueAt(consumer.getEndTime(),consumer.getId()-1,8);
 
@@ -308,7 +310,7 @@ public class View extends JFrame implements Runnable {
                 tableModelData.setValueAt(newValue, 0,1);
                 updateTables();
                 //System.out.println("ResourceList index0: " + this.controller.getModel().getResourceTypesList().get(0).getQuantity());
-                Thread.sleep(100);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

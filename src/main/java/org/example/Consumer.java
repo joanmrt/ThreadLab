@@ -93,17 +93,19 @@ public class Consumer implements Runnable{
             throw new RuntimeException(e);
         }
 
-        //Incrementar numero de consumidores asociados al recurso
-        this.boundResource.setConsumerNum(this.boundResource.getConsumerNum() + 1);
 
         if (this.model.getConfigurationPropertiesDTO().lifeCyclesEnabled){
             state = "RUNNING";
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
 
                 try {
-                    consume();
+                    boolean consumed = this.boundResource.consume();
+                    if (consumed){
+                        timesConsumed++;
+                    }
 
                     sleep(randomConsumerDelay());
+                    lifeCycles++;
                 } catch (InterruptedException e) {
                     state = "INTERRUPTED";
                     throw new RuntimeException(e);
@@ -115,9 +117,14 @@ public class Consumer implements Runnable{
             state = "RUNNING";
             while (this.model.isRunning()){
                 try {
-                    consume();
+                    boolean consumed = this.boundResource.consume();
+                    if (consumed){
+                        timesConsumed++;
+                    }
+
 
                     sleep(randomConsumerDelay());
+                    lifeCycles++;
                 } catch (InterruptedException e) {
                     state = "INTERRUPTED";
                     throw new RuntimeException(e);

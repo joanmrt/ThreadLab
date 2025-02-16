@@ -52,8 +52,12 @@ public class Model {
 
         for (int i = 0; i < configurationPropertiesDTO.getConsumerNumber(); i++){
             long startDelay = pickRandomStartDelay();
-            Consumer consumer = new Consumer(this, id, pickRandomResource(), startDelay);
+            ResourceType resourceType1 = pickRandomResource();
+            Consumer consumer = new Consumer(this, id, resourceType1, startDelay);
             consumerList.add(consumer);
+
+            //Incrementar numero de consumidores asociados al recurso
+            resourceType1.setConsumerNum(resourceType1.getConsumerNum() + 1);
             id++;
             Thread consumerThread = new Thread(consumer);
 
@@ -68,8 +72,13 @@ public class Model {
 
         for (int i = 0; i < configurationPropertiesDTO.getProducerNumber(); i++){
             long startDelay = pickRandomStartDelay();
-            Producer producer1 = new Producer(this, id, pickRandomResource(), startDelay);
+            ResourceType resourceType1 = pickRandomResource();
+            Producer producer1 = new Producer(this, id, resourceType1, startDelay);
             producersList.add(producer1);
+
+            //Incrementar numero de productores asociados al recurso
+            resourceType1.setProducerNum(resourceType1.getProducerNum() + 1);
+
             id++;
             Thread producerThread = new Thread(producer1);
             producerThread.start();

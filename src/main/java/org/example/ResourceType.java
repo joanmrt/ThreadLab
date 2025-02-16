@@ -1,5 +1,7 @@
 package org.example;
 
+import static java.lang.Thread.sleep;
+
 public class ResourceType {
     private Model model;
     private int id;
@@ -12,9 +14,9 @@ public class ResourceType {
 
     private int producerNum = 0;
 
-    private int underflow;
+    private int underflow = 0;
 
-    private int overflow;
+    private int overflow = 0;
     private String state;
 
     public ResourceType(Model model, int id){
@@ -26,7 +28,40 @@ public class ResourceType {
 
     }
 
+    public boolean consume() {
+        checkUnderflow();
 
+        if (quantity > minQuantity){
+            //sleep(20);
+            quantity = quantity - 1;
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean produce() {
+
+        checkOverflow();
+        if (quantity < maxQuantity){
+            //sleep(20);
+            quantity = quantity + 1;
+            return true;
+        }
+        return false;
+    }
+
+    private void checkOverflow(){
+        if (quantity > maxQuantity){
+            overflow ++;
+        }
+    }
+
+    private void checkUnderflow(){
+        if (quantity < minQuantity){
+            underflow++;
+        }
+    }
 
     public int getQuantity() {
         return quantity;
@@ -89,11 +124,5 @@ public class ResourceType {
         this.producerNum = producerNum;
     }
 
-    public void addResources(){
-        quantity = quantity + 1;
-    }
 
-    public void removeResources(){
-        quantity = quantity - 1;
-    }
 }

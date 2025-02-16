@@ -88,20 +88,24 @@ public class Producer implements Runnable{
         try {
             sleep(startDelay);
         } catch (InterruptedException e) {
+            state = "INTERRUPTED";
             throw new RuntimeException(e);
         }
 
         //Incrementar numero de productores asociados al recurso
-        this.boundResource.setProducerNum(this.boundResource.getProducerNum() + 1);
+        //this.boundResource.setProducerNum(this.boundResource.getProducerNum() + 1);
 
         state = "RUNNING";
         if (this.model.getConfigurationPropertiesDTO().lifeCyclesEnabled){
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
 
                 try {
-                    produce();
-
+                    boolean produced = this.boundResource.produce();
+                    if (produced){
+                        timesProduced++;
+                    }
                     sleep(randomProducerDelay());
+                    lifeCycles++;
                 } catch (InterruptedException e) {
                     state = "INTERRUPTED";
                     throw new RuntimeException(e);
@@ -113,14 +117,19 @@ public class Producer implements Runnable{
             state = "RUNNING";
             while (this.model.isRunning()){
                 try {
-                    produce();
+                    boolean produced = this.boundResource.produce();
+                    if (produced){
+                        timesProduced++;
+                    }
 
                     sleep(randomProducerDelay());
+                    lifeCycles++;
                 } catch (InterruptedException e) {
                     state = "INTERRUPTED";
                     throw new RuntimeException(e);
                 }
             }
         }
+
     }
 }
