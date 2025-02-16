@@ -1,6 +1,9 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import static java.lang.Thread.sleep;
 
 public class Model {
 
@@ -14,6 +17,8 @@ public class Model {
     private ResourceType resourceType;
     private ConfigurationPropertiesDTO configurationPropertiesDTO;
 
+    private boolean running = false;
+
     public Model(Consumer consumer, Producer producer) {
         this.consumer = consumer;
         this.producer = producer;
@@ -23,18 +28,53 @@ public class Model {
     public Model(Controller controller){
         this.controller = controller;
         this.configurationPropertiesDTO = new ConfigurationPropertiesDTO();
-        this.consumer = new Consumer(this);
-        this.producer = new Producer(this);
+        this.consumer = new Consumer(this, 1, new ResourceType(this, 1), 400);
+        this.producer = new Producer(this, 1, new ResourceType(this,1), 400);
         this.resourceType = new ResourceType(this, 1);
 
     }
 
     public void play(){
+        running = true;
         // Crear Resources establecidos en el DTO y añadirlos a la tabla
         createResources();
         // Crear Producers establecidos en el DTO ''
-
+        createProducers();
         // Crear Consumers ''
+        createConsumers();
+
+    }
+
+    private void createConsumers() {
+        consumerList = new ArrayList<>();
+        int id = 1;
+
+
+        for (int i = 0; i < configurationPropertiesDTO.getConsumerNumber(); i++){
+            long startDelay = pickRandomStartDelay();
+            Consumer consumer = new Consumer(this, id, pickRandomResource(), startDelay);
+            consumerList.add(consumer);
+            id++;
+            Thread consumerThread = new Thread(consumer);
+
+            consumerThread.start();
+        }
+    }
+
+    private void createProducers() {
+        producersList = new ArrayList<>();
+        int id = 1;
+
+
+        for (int i = 0; i < configurationPropertiesDTO.getProducerNumber(); i++){
+            long startDelay = pickRandomStartDelay();
+            Producer producer1 = new Producer(this, id, pickRandomResource(), startDelay);
+            producersList.add(producer1);
+            id++;
+            Thread producerThread = new Thread(producer1);
+            producerThread.start();
+
+        }
     }
 
     private void createResources(){
@@ -47,6 +87,24 @@ public class Model {
             id++;
         }
 
+    }
+
+    private ResourceType pickRandomResource(){
+        Random random = new Random();
+        int randomResourceIndex = random.nextInt(resourceTypesList.size());
+        return resourceTypesList.get(randomResourceIndex);
+    }
+
+    private long pickRandomStartDelay(){
+        int min = this.getConfigurationPropertiesDTO().getStartDelayMin();
+        int max = this.getConfigurationPropertiesDTO().getStartDelayMax();
+        if (max >= min){
+            Random random = new Random();
+            long result = random.nextInt(max - min + 1) + min;
+            return result;
+        }
+
+        return 300;
     }
 
     public void stop(){
@@ -111,5 +169,13 @@ public class Model {
 
     public void setConfigurationPropertiesDTO(ConfigurationPropertiesDTO configurationPropertiesDTO) {
         this.configurationPropertiesDTO = configurationPropertiesDTO;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 }

@@ -41,8 +41,7 @@ public class View extends JFrame implements Runnable {
         this.resourcePanel = new ResourcePanel();
         this.producerPanel = new ProducerPanel();
         createWindow();
-        Thread updateValuesThread = new Thread(this);
-        updateValuesThread.start();
+
     }
 
     public void setController(Controller controller){
@@ -109,25 +108,33 @@ public class View extends JFrame implements Runnable {
         // Panel de botones
 
         this.controlPanel.setLayout(new GridBagLayout());
+
         // Button Play
         JButton playButton = this.controlPanel.getPlay();
         playButton.addActionListener(e -> {
             System.out.println("Play button clicked!");
 
-            Thread thread = new Thread(controller.getModel().getProducer());
-            Thread thread1 = new Thread(controller.getModel().getConsumer());
-            thread.start();
-            thread1.start();
-            try {
-                this.controller.setDTOParams();
-            }
-            catch (Exception exceptionPlay){
-                System.out.println("Error trying to start model "+ exceptionPlay);
+            if (!this.controller.getModel().isRunning()){
+                try {
+                    this.controller.setDTOParams();
+                }
+                catch (Exception exceptionPlay){
+                    System.out.println("Error trying to start model "+ exceptionPlay);
+                    System.out.println("Using default settings");
+                }
+
+                this.controller.getModel().play();
+                addTables();
+                Thread updateValuesThread = new Thread(this);
+                updateValuesThread.start();
             }
 
-            this.controller.getModel().play();
-            updateTables();
+            else {
+                System.out.println("Already running!");
+            }
+
         });
+
         c.weightx = 0;
         c.weighty = 0;
         c.gridx = 0;
@@ -144,6 +151,7 @@ public class View extends JFrame implements Runnable {
             this.viewer.setBackground(Color.RED);
             System.out.println(controller.getModel().getResources().getQuantity());
             System.out.println(Integer.parseInt(this.getConfigurationPanel().getValueAt(0,1).toString()));
+            this.controller.getModel().setRunning(false);
             clearTables();
         });
         c.gridy = 0;
@@ -173,22 +181,108 @@ public class View extends JFrame implements Runnable {
 
     }
 
-    private void updateTables() {
-        //Update Resources
-        ArrayList<ResourceType> arrayList = this.controller.getModel().getResourceTypesList();
+    private void addTables() {
+        //Add Resources
+        ArrayList<ResourceType> arrayListResources = this.controller.getModel().getResourceTypesList();
         DefaultTableModel tableModelResource = (DefaultTableModel) this.resourcePanel.getModel();
 
-        for (ResourceType resourceType : arrayList){
+        for (ResourceType resourceType : arrayListResources){
             Object[] rowData = {resourceType.getId(),
                     resourceType.getQuantity(),
                     resourceType.getMinQuantity(),
                     resourceType.getMaxQuantity(),
-                    0,
-                    0,
+                    resourceType.getConsumerNum(),
+                    resourceType.getProducerNum(),
                     resourceType.getUnderflow(),
                     resourceType.getOverflow(),
                     resourceType.getState()};
             tableModelResource.addRow(rowData);
+        }
+
+        // Add Producers
+        ArrayList<Producer> arrayListProducer = this.controller.getModel().getProducersList();
+        DefaultTableModel tableModelProducer = (DefaultTableModel) this.producerPanel.getModel();
+
+        for (Producer producer : arrayListProducer){
+            Object[] rowData = {producer.getId(),
+                    "Resource " + producer.getBoundResource().getId(),
+                    producer.getState(),
+                    producer.getStartDelay(),
+                    producer.getProduceDelay(),
+                    producer.getTimesProduced(),
+                    producer.getLifeCycles(),
+                    producer.getStartTime(),
+                    producer.getEndTime()};
+            tableModelProducer.addRow(rowData);
+        }
+
+        //Add Consumer
+
+        ArrayList<Consumer> arrayListConsumer = this.controller.getModel().getConsumerList();
+        DefaultTableModel tableModelConsumer = (DefaultTableModel) this.consumerPanel.getModel();
+
+        for (Consumer consumer : arrayListConsumer){
+            Object[] rowData = {consumer.getId(),
+                    "Resource " + consumer.getBoundResource().getId(),
+                    consumer.getState(),
+                    consumer.getStartDelay(),
+                    consumer.getConsumeDelay(),
+                    consumer.getTimesConsumed(),
+                    consumer.getLifeCycles(),
+                    consumer.getStartTime(),
+                    consumer.getEndTime()};
+            tableModelConsumer.addRow(rowData);
+        }
+
+    }
+
+    private void updateTables(){
+        updateResources();
+        updateConsumers();
+        updateProducers();
+    }
+
+    private void updateProducers() {
+        ArrayList<Producer> arrayListProducer = this.controller.getModel().getProducersList();
+        DefaultTableModel tableModelProducer = (DefaultTableModel) this.producerPanel.getModel();
+
+        for (Producer producer : arrayListProducer){
+            tableModelProducer.setValueAt(producer.getState(),producer.getId()-1,2);
+            tableModelProducer.setValueAt(producer.getProduceDelay(),producer.getId()-1,4);
+            tableModelProducer.setValueAt(producer.getTimesProduced(),producer.getId()-1,5);
+            tableModelProducer.setValueAt(producer.getStartTime(),producer.getId()-1,7);
+            tableModelProducer.setValueAt(producer.getEndTime(),producer.getId()-1,8);
+
+
+        }
+    }
+
+    private void updateConsumers() {
+        ArrayList<Consumer> arrayListConsumer = this.controller.getModel().getConsumerList();
+        DefaultTableModel tableModelConsumer = (DefaultTableModel) this.consumerPanel.getModel();
+
+        for (Consumer consumer : arrayListConsumer){
+            tableModelConsumer.setValueAt(consumer.getState(),consumer.getId()-1,2);
+            tableModelConsumer.setValueAt(consumer.getConsumeDelay(),consumer.getId()-1,4);
+            tableModelConsumer.setValueAt(consumer.getTimesConsumed(),consumer.getId()-1,5);
+            tableModelConsumer.setValueAt(consumer.getStartTime(),consumer.getId()-1,7);
+            tableModelConsumer.setValueAt(consumer.getEndTime(),consumer.getId()-1,8);
+
+
+        }
+    }
+
+    private void updateResources(){
+        ArrayList<ResourceType> arrayListResources = this.controller.getModel().getResourceTypesList();
+        DefaultTableModel tableModelResource = (DefaultTableModel) this.resourcePanel.getModel();
+
+        for (ResourceType resourceType : arrayListResources){
+            tableModelResource.setValueAt(resourceType.getQuantity(),resourceType.getId()-1,1);
+            tableModelResource.setValueAt(resourceType.getConsumerNum(),resourceType.getId()-1,4);
+            tableModelResource.setValueAt(resourceType.getProducerNum(),resourceType.getId()-1,5);
+            tableModelResource.setValueAt(resourceType.getUnderflow(), resourceType.getId()-1, 6);
+            tableModelResource.setValueAt(resourceType.getOverflow(), resourceType.getId()-1, 7);
+            tableModelResource.setValueAt(resourceType.getState(), resourceType.getId()-1, 8);
         }
     }
 
@@ -205,13 +299,15 @@ public class View extends JFrame implements Runnable {
 
     @Override
     public void run() {
-        DefaultTableModel tableModel = (DefaultTableModel) this.dataPanel.getModel();
+        DefaultTableModel tableModelData = (DefaultTableModel) this.dataPanel.getModel();
 
-        while (true){
+        while (this.controller.getModel().isRunning()){
 
             try {
                 int newValue = controller.getModel().getResources().getQuantity();
-                tableModel.setValueAt(newValue, 0,1);
+                tableModelData.setValueAt(newValue, 0,1);
+                updateTables();
+                //System.out.println("ResourceList index0: " + this.controller.getModel().getResourceTypesList().get(0).getQuantity());
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

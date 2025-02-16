@@ -8,7 +8,9 @@ public class ResourceType {
     private int maxQuantity;
     private int minQuantity;
 
-    private int quantityConsumed;
+    private int consumerNum = 0;
+
+    private int producerNum = 0;
 
     private int underflow;
 
@@ -20,8 +22,10 @@ public class ResourceType {
         this.id = id;
         this.maxQuantity = this.model.getConfigurationPropertiesDTO().getMaxQuantity();
         this.minQuantity = this.model.getConfigurationPropertiesDTO().getMinQuantity();
+        this.state = "Normal";
 
     }
+
 
 
     public int getQuantity() {
@@ -31,6 +35,7 @@ public class ResourceType {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
 
     public int getMaxQuantity() {
         return maxQuantity;
@@ -56,10 +61,6 @@ public class ResourceType {
         return id;
     }
 
-    public int getQuantityConsumed() {
-        return quantityConsumed;
-    }
-
     public int getUnderflow() {
         return underflow;
     }
@@ -70,6 +71,22 @@ public class ResourceType {
 
     public String getState() {
         return state;
+    }
+
+    public int getConsumerNum() {
+        return consumerNum;
+    }
+
+    public void setConsumerNum(int consumerNum) {
+        this.consumerNum = consumerNum;
+    }
+
+    public int getProducerNum() {
+        return producerNum;
+    }
+
+    public void setProducerNum(int producerNum) {
+        this.producerNum = producerNum;
     }
 
     public void addResources(){
