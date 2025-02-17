@@ -64,9 +64,31 @@ public class Consumer implements Runnable{
         return boundResource;
     }
 
-    public void consume(){
+    public void consume2(){
         this.boundResource.setQuantity(boundResource.getQuantity() - 1);
         this.timesConsumed++;
+    }
+
+    private void consume() {
+        boolean isSync = this.model.getConfigurationPropertiesDTO().isGuardedRegion();
+        try {
+            boolean consumed;
+            if (isSync){
+                consumed = this.boundResource.consumeSync();
+            }
+            else {
+                consumed = this.boundResource.consume();
+            }
+            if (consumed){
+                timesConsumed++;
+            }
+
+            sleep(randomConsumerDelay());
+            lifeCycles++;
+        } catch (InterruptedException e) {
+            state = "INTERRUPTED";
+            throw new RuntimeException(e);
+        }
     }
 
     private int randomConsumerDelay(){
@@ -98,40 +120,19 @@ public class Consumer implements Runnable{
             state = "RUNNING";
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
 
-                try {
-                    boolean consumed = this.boundResource.consume();
-                    if (consumed){
-                        timesConsumed++;
-                    }
-
-                    sleep(randomConsumerDelay());
-                    lifeCycles++;
-                } catch (InterruptedException e) {
-                    state = "INTERRUPTED";
-                    throw new RuntimeException(e);
-                }
+                consume();
             }
         }
 
         else{
             state = "RUNNING";
             while (this.model.isRunning()){
-                try {
-                    boolean consumed = this.boundResource.consume();
-                    if (consumed){
-                        timesConsumed++;
-                    }
-
-
-                    sleep(randomConsumerDelay());
-                    lifeCycles++;
-                } catch (InterruptedException e) {
-                    state = "INTERRUPTED";
-                    throw new RuntimeException(e);
-                }
+                consume();
             }
         }
 
 
     }
+
+
 }

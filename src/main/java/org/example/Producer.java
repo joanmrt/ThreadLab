@@ -64,9 +64,31 @@ public class Producer implements Runnable{
         return boundResource;
     }
 
-    public void produce(){
+    public void produce2(){
         this.boundResource.setQuantity(boundResource.getQuantity() + 1);
         this.timesProduced++;
+    }
+
+    private void produce() {
+        boolean isSync = this.model.getConfigurationPropertiesDTO().isGuardedRegion();
+        try {
+            boolean produced;
+            if (isSync){
+                produced = this.boundResource.produceSync();
+            }
+            else {
+                produced = this.boundResource.produce();
+            }
+            if (produced){
+                timesProduced++;
+            }
+
+            sleep(randomProducerDelay());
+            lifeCycles++;
+        } catch (InterruptedException e) {
+            state = "INTERRUPTED";
+            throw new RuntimeException(e);
+        }
     }
     private int randomProducerDelay(){
         int min = this.model.getConfigurationPropertiesDTO().getConsumerDelayMin();
@@ -98,38 +120,18 @@ public class Producer implements Runnable{
         state = "RUNNING";
         if (this.model.getConfigurationPropertiesDTO().lifeCyclesEnabled){
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
-
-                try {
-                    boolean produced = this.boundResource.produce();
-                    if (produced){
-                        timesProduced++;
-                    }
-                    sleep(randomProducerDelay());
-                    lifeCycles++;
-                } catch (InterruptedException e) {
-                    state = "INTERRUPTED";
-                    throw new RuntimeException(e);
-                }
+                produce();
             }
         }
 
         else{
             state = "RUNNING";
             while (this.model.isRunning()){
-                try {
-                    boolean produced = this.boundResource.produce();
-                    if (produced){
-                        timesProduced++;
-                    }
-
-                    sleep(randomProducerDelay());
-                    lifeCycles++;
-                } catch (InterruptedException e) {
-                    state = "INTERRUPTED";
-                    throw new RuntimeException(e);
-                }
+                produce();
             }
         }
 
     }
+
+
 }

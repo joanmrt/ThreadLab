@@ -29,11 +29,13 @@ public class ResourceType {
     }
 
     public boolean consume() {
-        checkUnderflow();
 
+        checkUnderflow();
         if (quantity > minQuantity){
             //sleep(20);
             quantity = quantity - 1;
+            checkUnderflow();
+            updateState();
             return true;
         }
 
@@ -45,21 +47,76 @@ public class ResourceType {
         checkOverflow();
         if (quantity < maxQuantity){
             //sleep(20);
+
             quantity = quantity + 1;
+            checkOverflow();
+            updateState();
             return true;
         }
         return false;
     }
 
+    public synchronized boolean consumeSync() {
+
+        checkUnderflow();
+        if (quantity > minQuantity){
+            //sleep(20);
+            quantity = quantity - 1;
+            checkUnderflow();
+            updateState();
+            return true;
+        }
+
+        else if (quantity <= minQuantity){
+            try {
+                wait();
+                return false;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+        return false;
+    }
+
+    public synchronized boolean produceSync() {
+
+        checkOverflow();
+        if (quantity < maxQuantity){
+            //sleep(20);
+
+            quantity = quantity + 1;
+            checkOverflow();
+            updateState();
+            notify();
+            return true;
+        }
+        return false;
+    }
+
+
     private void checkOverflow(){
         if (quantity > maxQuantity){
+
             overflow ++;
         }
     }
 
     private void checkUnderflow(){
         if (quantity < minQuantity){
+
             underflow++;
+        }
+    }
+
+    private void updateState() {
+        if (quantity > maxQuantity) {
+            state = "Overflow";
+        } else if (quantity < minQuantity) {
+            state = "Underflow";
+        } else if (quantity >= 0) {
+            state = "Normal";
         }
     }
 
