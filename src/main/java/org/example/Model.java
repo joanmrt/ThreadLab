@@ -119,6 +119,10 @@ public class Model {
     public void stop(){
 
     }
+    public ModelDTO sendDTO(){
+        ModelDTO modelDTO = new ModelDTO(this.consumerList,this.producersList,this.resourceTypesList,this.running);
+        return modelDTO;
+    }
 
     public ArrayList<Consumer> getConsumerList() {
         return consumerList;

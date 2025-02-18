@@ -61,5 +61,17 @@ public class Controller {
         System.out.println(model.getConfigurationPropertiesDTO().toString());
     }
 
+    public ModelDTO getModelDTO(){
+        ModelDTO modelDTO = this.model.sendDTO();
+        return modelDTO;
+    }
+
+    public void play(){
+        this.getModel().play();
+    }
+
+    public void stop(){
+        this.model.setRunning(false);
+    }
 
 }

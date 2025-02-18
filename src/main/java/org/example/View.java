@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static java.awt.GridBagConstraints.*;
+import static java.lang.Thread.sleep;
 
 
 public class View extends JFrame implements Runnable {
@@ -113,8 +114,9 @@ public class View extends JFrame implements Runnable {
         JButton playButton = this.controlPanel.getPlay();
         playButton.addActionListener(e -> {
             System.out.println("Play button clicked!");
+            ModelDTO modelDTO = this.controller.getModelDTO();
 
-            if (!this.controller.getModel().isRunning()){
+            if (!modelDTO.isRunning()){
                 try {
                     this.controller.setDTOParams();
                 }
@@ -123,7 +125,7 @@ public class View extends JFrame implements Runnable {
                     System.out.println("Using default settings");
                 }
 
-                this.controller.getModel().play();
+                this.controller.play();
                 addTables();
                 Thread updateValuesThread = new Thread(this);
                 updateValuesThread.start();
@@ -148,11 +150,10 @@ public class View extends JFrame implements Runnable {
         JButton stopButton = this.controlPanel.getStop();
         stopButton.addActionListener(e -> {
             System.out.println("Stop button clicked!");
-            this.viewer.setBackground(Color.RED);
-            System.out.println(controller.getModel().getResources().getQuantity());
+
             System.out.println(Integer.parseInt(this.getConfigurationPanel().getValueAt(0,1).toString()));
-            this.controller.getModel().setRunning(false);
-            clearTables();
+            this.controller.stop();
+            //clearTables();
         });
         c.gridy = 0;
         c.gridx = 1;
@@ -183,7 +184,9 @@ public class View extends JFrame implements Runnable {
 
     private void addTables() {
         //Add Resources
-        ArrayList<ResourceType> arrayListResources = this.controller.getModel().getResourceTypesList();
+        ModelDTO modelDTO = this.controller.getModelDTO();
+
+        ArrayList<ResourceType> arrayListResources = modelDTO.getResourceTypesList();
         DefaultTableModel tableModelResource = (DefaultTableModel) this.resourcePanel.getModel();
 
         for (ResourceType resourceType : arrayListResources){
@@ -200,7 +203,7 @@ public class View extends JFrame implements Runnable {
         }
 
         // Add Producers
-        ArrayList<Producer> arrayListProducer = this.controller.getModel().getProducersList();
+        ArrayList<Producer> arrayListProducer = modelDTO.getProducersList();
         DefaultTableModel tableModelProducer = (DefaultTableModel) this.producerPanel.getModel();
 
         for (Producer producer : arrayListProducer){
@@ -218,7 +221,7 @@ public class View extends JFrame implements Runnable {
 
         //Add Consumer
 
-        ArrayList<Consumer> arrayListConsumer = this.controller.getModel().getConsumerList();
+        ArrayList<Consumer> arrayListConsumer = modelDTO.getConsumerList();
         DefaultTableModel tableModelConsumer = (DefaultTableModel) this.consumerPanel.getModel();
 
         for (Consumer consumer : arrayListConsumer){
@@ -236,14 +239,14 @@ public class View extends JFrame implements Runnable {
 
     }
 
-    private void updateTables(){
-        updateResources();
-        updateConsumers();
-        updateProducers();
+    private void updateTables(ModelDTO modelDTO){
+        updateResources(modelDTO);
+        updateConsumers(modelDTO);
+        updateProducers(modelDTO);
     }
 
-    private void updateProducers() {
-        ArrayList<Producer> arrayListProducer = this.controller.getModel().getProducersList();
+    private void updateProducers(ModelDTO modelDTO) {
+        ArrayList<Producer> arrayListProducer = modelDTO.getProducersList();
         DefaultTableModel tableModelProducer = (DefaultTableModel) this.producerPanel.getModel();
 
         for (Producer producer : arrayListProducer){
@@ -258,8 +261,8 @@ public class View extends JFrame implements Runnable {
         }
     }
 
-    private void updateConsumers() {
-        ArrayList<Consumer> arrayListConsumer = this.controller.getModel().getConsumerList();
+    private void updateConsumers(ModelDTO modelDTO) {
+        ArrayList<Consumer> arrayListConsumer = modelDTO.getConsumerList();
         DefaultTableModel tableModelConsumer = (DefaultTableModel) this.consumerPanel.getModel();
 
         for (Consumer consumer : arrayListConsumer){
@@ -274,9 +277,10 @@ public class View extends JFrame implements Runnable {
         }
     }
 
-    private void updateResources(){
-        ArrayList<ResourceType> arrayListResources = this.controller.getModel().getResourceTypesList();
+    private void updateResources(ModelDTO modelDTO){
+        ArrayList<ResourceType> arrayListResources = modelDTO.getResourceTypesList();
         DefaultTableModel tableModelResource = (DefaultTableModel) this.resourcePanel.getModel();
+
 
         for (ResourceType resourceType : arrayListResources){
             tableModelResource.setValueAt(resourceType.getQuantity(),resourceType.getId()-1,1);
@@ -302,19 +306,18 @@ public class View extends JFrame implements Runnable {
     @Override
     public void run() {
         DefaultTableModel tableModelData = (DefaultTableModel) this.dataPanel.getModel();
+        ModelDTO modelDTO = this.controller.getModelDTO();
 
-        while (this.controller.getModel().isRunning()){
-
+        while (modelDTO.isRunning()){
+            modelDTO = this.controller.getModelDTO();
             try {
-                int newValue = controller.getModel().getResources().getQuantity();
-                tableModelData.setValueAt(newValue, 0,1);
-                updateTables();
-                //System.out.println("ResourceList index0: " + this.controller.getModel().getResourceTypesList().get(0).getQuantity());
-                Thread.sleep(50);
+                updateTables(modelDTO);
+                sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+        clearTables();
 
     }
 

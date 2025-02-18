@@ -91,8 +91,8 @@ public class Producer implements Runnable{
         }
     }
     private int randomProducerDelay(){
-        int min = this.model.getConfigurationPropertiesDTO().getConsumerDelayMin();
-        int max = this.model.getConfigurationPropertiesDTO().getConsumerDelayMax();
+        int min = this.model.getConfigurationPropertiesDTO().getProducerDelayMin();
+        int max = this.model.getConfigurationPropertiesDTO().getProducerDelayMax();
 
         if (max >= min){
             Random random = new Random();
