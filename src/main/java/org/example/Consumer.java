@@ -71,13 +71,18 @@ public class Consumer implements Runnable{
 
     private void consume() {
         boolean isSync = this.model.getConfigurationPropertiesDTO().isGuardedRegion();
+        boolean isProtected = this.model.getConfigurationPropertiesDTO().isProtectNegativeStock();
         try {
             boolean consumed;
-            if (isSync){
-                consumed = this.boundResource.consumeSync();
+            if (isSync && isProtected){
+                consumed = this.boundResource.consumeSyncProtected();
             }
-            else {
-                consumed = this.boundResource.consume();
+            else if (!isSync && isProtected){
+                consumed = this.boundResource.consumeUnsyncProtected();
+            } else if (isSync && !isProtected) {
+                consumed = this.boundResource.consumeSyncUnprotected();
+            } else {
+                consumed = this.boundResource.consumeUnsyncUnprotected();
             }
             if (consumed){
                 timesConsumed++;

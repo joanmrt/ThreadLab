@@ -1,5 +1,7 @@
 package org.example;
 
+import static java.lang.Thread.sleep;
+
 public class ResourceType {
     private Model model;
     private int id;
@@ -39,31 +41,26 @@ public class ResourceType {
         return false;
     }
 
-    public boolean produce() {
+    public boolean produce() throws InterruptedException {
         System.out.println("quantity produce: " + quantity);
-        if (quantity < maxQuantity){
-            //sleep(20);
 
-            quantity = quantity + 1;
-            checkOverflow();
-            updateState();
-            return true;
-        }
-        return false;
+        quantity = quantity + 1;
+        checkOverflow();
+        updateState();
+        return true;
     }
 
-    public synchronized boolean consumeSync() {
+    public synchronized boolean consumeSync() throws InterruptedException {
 
-        checkUnderflow();
         if (quantity > minQuantity){
-            //sleep(20);
+            sleep(20);
             quantity = quantity - 1;
             checkUnderflow();
             updateState();
             return true;
         }
 
-        else if (quantity <= minQuantity){
+        else {
             try {
                 wait();
                 return false;
@@ -73,8 +70,63 @@ public class ResourceType {
 
         }
 
-        return false;
     }
+
+    public synchronized boolean consumeSyncProtected(){
+
+        while (quantity <= minQuantity){
+            try{
+                wait();
+                return false;
+            }
+            catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        quantity--;
+        checkUnderflow();
+        updateState();
+        return true;
+
+    }
+
+    public synchronized boolean consumeSyncUnprotected(){
+        quantity--;
+        checkUnderflow();
+        updateState();
+        return true;
+
+    }
+
+    public boolean consumeUnsyncUnprotected() {
+        quantity--;
+        checkUnderflow();
+        updateState();
+        return true;
+
+    }
+
+    public synchronized boolean consumeUnsyncProtected() {
+
+        while (quantity <= minQuantity){
+            try{
+                sleep(0);
+                return false;
+            }
+            catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        quantity--;
+        checkUnderflow();
+        updateState();
+        return true;
+
+    }
+
+
 
     public synchronized boolean produceSync() {
 
