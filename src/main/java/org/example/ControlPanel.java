@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 public class ControlPanel extends JPanel {
@@ -25,9 +26,11 @@ public class ControlPanel extends JPanel {
 
     public ControlPanel(Play play, Stop stop) {
         this.play = play;
-        play.setText("Ok");
         this.stop = stop;
-        stop.setText("Cancel");
+        this.play.setText("Ok");
+        this.stop.setText("Cancel");
+
+
     }
 
     public ControlPanel(){
@@ -35,5 +38,7 @@ public class ControlPanel extends JPanel {
         play.setText("Play");
         this.stop = new Stop();
         stop.setText("Stop");
+        this.play.setBackground(new Color(157, 210, 70));
+        this.stop.setBackground(new Color(255, 56, 56));
     }
 }

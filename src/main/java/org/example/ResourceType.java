@@ -109,9 +109,9 @@ public class ResourceType {
 
     public synchronized boolean consumeUnsyncProtected() {
 
-        while (quantity <= minQuantity){
+        while (quantity < minQuantity){
             try{
-                sleep(0);
+                sleep(10);
                 return false;
             }
             catch (InterruptedException e){
