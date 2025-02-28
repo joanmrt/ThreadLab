@@ -1,14 +1,17 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 import static java.lang.Thread.sleep;
-
+@Getter
+@Setter
 public class Model {
 
     private Controller controller;
-
     private ArrayList<Consumer> consumerList;
     private ArrayList<Producer> producersList;
     private ArrayList<ResourceType> resourceTypesList;
@@ -19,17 +22,9 @@ public class Model {
 
     private boolean running = false;
 
-    public Model(Consumer consumer, Producer producer) {
-        this.consumer = consumer;
-        this.producer = producer;
-
-    }
-
     public Model(Controller controller){
         this.controller = controller;
         this.configurationPropertiesDTO = new ConfigurationPropertiesDTO();
-        this.consumer = new Consumer(this, 1, new ResourceType(this, 1), 400);
-        this.producer = new Producer(this, 1, new ResourceType(this,1), 400);
         this.resourceType = new ResourceType(this, 1);
 
     }
@@ -117,78 +112,10 @@ public class Model {
     }
 
     public void stop(){
-
+        this.running = false;
     }
     public ModelDTO sendDTO(){
         ModelDTO modelDTO = new ModelDTO(this.consumerList,this.producersList,this.resourceTypesList,this.running);
         return modelDTO;
-    }
-
-    public ArrayList<Consumer> getConsumerList() {
-        return consumerList;
-    }
-
-    public ArrayList<Producer> getProducersList() {
-        return producersList;
-    }
-
-    public ArrayList<ResourceType> getResourceTypesList() {
-        return resourceTypesList;
-    }
-
-    public Controller getController() {
-        return controller;
-    }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
-
-    public Consumer getConsumer() {
-        return consumer;
-    }
-
-    public void setConsumer(Consumer consumer) {
-        this.consumer = consumer;
-    }
-
-    public Producer getProducer() {
-        return producer;
-    }
-
-    public void setProducer(Producer producer) {
-        this.producer = producer;
-    }
-
-    public ResourceType getResources() {
-        return resourceType;
-    }
-
-    public void setResources(ResourceType resourceType) {
-        this.resourceType = resourceType;
-    }
-
-    public ResourceType getResourceType() {
-        return resourceType;
-    }
-
-    public void setResourceType(ResourceType resourceType) {
-        this.resourceType = resourceType;
-    }
-
-    public ConfigurationPropertiesDTO getConfigurationPropertiesDTO() {
-        return configurationPropertiesDTO;
-    }
-
-    public void setConfigurationPropertiesDTO(ConfigurationPropertiesDTO configurationPropertiesDTO) {
-        this.configurationPropertiesDTO = configurationPropertiesDTO;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
     }
 }

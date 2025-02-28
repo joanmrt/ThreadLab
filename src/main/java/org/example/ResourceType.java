@@ -1,7 +1,11 @@
 package org.example;
 
-import static java.lang.Thread.sleep;
+import lombok.Getter;
+import lombok.Setter;
 
+import static java.lang.Thread.sleep;
+@Getter
+@Setter
 public class ResourceType {
     private Model model;
     private int id;
@@ -28,48 +32,12 @@ public class ResourceType {
 
     }
 
-    public boolean consume() {
-        System.out.println("quantity consume: " + quantity);
-        if (quantity > minQuantity){
-            //sleep(20);
-            quantity = quantity - 1;
-            checkUnderflow();
-            updateState();
-            return true;
-        }
-
-        return false;
-    }
-
     public boolean produce() throws InterruptedException {
         System.out.println("quantity produce: " + quantity);
-
         quantity = quantity + 1;
         checkOverflow();
         updateState();
         return true;
-    }
-
-    public synchronized boolean consumeSync() throws InterruptedException {
-
-        if (quantity > minQuantity){
-            sleep(20);
-            quantity = quantity - 1;
-            checkUnderflow();
-            updateState();
-            return true;
-        }
-
-        else {
-            try {
-                wait();
-                return false;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-
     }
 
     public synchronized boolean consumeSyncProtected(){
@@ -88,7 +56,6 @@ public class ResourceType {
         checkUnderflow();
         updateState();
         return true;
-
     }
 
     public synchronized boolean consumeSyncUnprotected(){
@@ -107,12 +74,12 @@ public class ResourceType {
 
     }
 
-    public synchronized boolean consumeUnsyncProtected() {
+    public boolean consumeUnsyncProtected() {
 
-        while (quantity < minQuantity){
+        while (quantity <= minQuantity){
             try{
-                sleep(10);
-                return false;
+                sleep(5);
+                //return false;
             }
             catch (InterruptedException e){
                 Thread.currentThread().interrupt();
@@ -145,16 +112,17 @@ public class ResourceType {
 
 
     private void checkOverflow(){
-        System.out.println("quantity overflow: " + quantity);
-        if (quantity > maxQuantity){
 
+        if (quantity > maxQuantity){
+            System.out.println("quantity overflow: " + quantity);
             overflow ++;
         }
     }
 
     private void checkUnderflow(){
-        System.out.println("quantity underflow: " + quantity);
+
         if (quantity < minQuantity){
+            System.out.println("quantity underflow: " + quantity);
 
             underflow++;
         }
@@ -168,67 +136,6 @@ public class ResourceType {
         } else if (quantity >= 0) {
             state = "Normal";
         }
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-
-    public int getMaxQuantity() {
-        return maxQuantity;
-    }
-
-    public void setMaxQuantity(int maxQuantity) {
-        this.maxQuantity = maxQuantity;
-    }
-
-    public int getMinQuantity() {
-        return minQuantity;
-    }
-
-    public void setMinQuantity(int minQuantity) {
-        this.minQuantity = minQuantity;
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getUnderflow() {
-        return underflow;
-    }
-
-    public int getOverflow() {
-        return overflow;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public int getConsumerNum() {
-        return consumerNum;
-    }
-
-    public void setConsumerNum(int consumerNum) {
-        this.consumerNum = consumerNum;
-    }
-
-    public int getProducerNum() {
-        return producerNum;
-    }
-
-    public void setProducerNum(int producerNum) {
-        this.producerNum = producerNum;
     }
 
 

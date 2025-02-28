@@ -1,9 +1,14 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Random;
 
 import static java.lang.Thread.sleep;
 
+@Getter
+@Setter
 public class Consumer implements Runnable{
 
     private Model model;
@@ -22,51 +27,6 @@ public class Consumer implements Runnable{
         this.boundResource = resourceType;
         this.id = id;
         this.startDelay = startDelay;
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public long getStartDelay() {
-        return startDelay;
-    }
-
-    public long getConsumeDelay() {
-        return consumeDelay;
-    }
-
-    public int getTimesConsumed() {
-        return timesConsumed;
-    }
-
-    public int getLifeCycles() {
-        return lifeCycles;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
-    }
-
-    public ResourceType getBoundResource() {
-        return boundResource;
-    }
-
-    public void consume2(){
-        this.boundResource.setQuantity(boundResource.getQuantity() - 1);
-        this.timesConsumed++;
     }
 
     private void consume() {
@@ -121,7 +81,7 @@ public class Consumer implements Runnable{
         }
 
 
-        if (this.model.getConfigurationPropertiesDTO().lifeCyclesEnabled){
+        if (this.model.getConfigurationPropertiesDTO().isLifeCyclesEnabled()){
             state = "RUNNING";
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
 

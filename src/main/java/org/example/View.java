@@ -1,5 +1,8 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -8,33 +11,20 @@ import java.util.ArrayList;
 import static java.awt.GridBagConstraints.*;
 import static java.lang.Thread.sleep;
 
-
+@Getter
+@Setter
 public class View extends JFrame implements Runnable {
 
     private Controller controller;
     private ControlPanel controlPanel;
-    private Viewer viewer;
     private DataPanel dataPanel;
     private ConfigurationPanel configurationPanel;
     private ConsumerPanel consumerPanel;
     private ResourcePanel resourcePanel;
     private ProducerPanel producerPanel;
 
-
-    public View(ControlPanel controlPanel, Viewer viewer, DataPanel dataPanel) {
-
-        this.controlPanel = controlPanel;
-        System.out.println("Control creado");
-        this.viewer = viewer;
-        System.out.println("Viewer creado");
-        this.dataPanel = dataPanel;
-        System.out.println("Data Viewer creado.");
-        createWindow();
-    }
-
     public View(Controller controller){
         this.controller = controller;
-        this.viewer = new Viewer();
         this.controlPanel = new ControlPanel();
         this.dataPanel = new DataPanel(this);
         this.configurationPanel = new ConfigurationPanel();
@@ -44,11 +34,6 @@ public class View extends JFrame implements Runnable {
         createWindow();
 
     }
-
-    public void setController(Controller controller){
-        this.controller = controller;
-    }
-
     private void createWindow(){
         this.setLayout(new GridBagLayout());
         this.setTitle("ThreadLab");

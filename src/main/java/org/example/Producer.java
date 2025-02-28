@@ -1,9 +1,13 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Random;
 
 import static java.lang.Thread.sleep;
-
+@Getter
+@Setter
 public class Producer implements Runnable{
 
     private Model model;
@@ -22,51 +26,6 @@ public class Producer implements Runnable{
         this.id = id;
         this.startDelay =startDelay;
 
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public long getStartDelay() {
-        return startDelay;
-    }
-
-    public long getProduceDelay() {
-        return produceDelay;
-    }
-
-    public int getTimesProduced() {
-        return timesProduced;
-    }
-
-    public int getLifeCycles() {
-        return lifeCycles;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
-    }
-
-    public ResourceType getBoundResource() {
-        return boundResource;
-    }
-
-    public void produce2(){
-        this.boundResource.setQuantity(boundResource.getQuantity() + 1);
-        this.timesProduced++;
     }
 
     private void produce() {
@@ -118,7 +77,7 @@ public class Producer implements Runnable{
         //this.boundResource.setProducerNum(this.boundResource.getProducerNum() + 1);
 
         state = "RUNNING";
-        if (this.model.getConfigurationPropertiesDTO().lifeCyclesEnabled){
+        if (this.model.getConfigurationPropertiesDTO().isLifeCyclesEnabled()){
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
                 produce();
             }
@@ -132,6 +91,5 @@ public class Producer implements Runnable{
         }
 
     }
-
 
 }
