@@ -46,7 +46,6 @@ public class ResourceType {
         while (quantity <= minQuantity){
             try{
                 wait();
-                return false;
             }
             catch (InterruptedException e){
                 Thread.currentThread().interrupt();
@@ -79,8 +78,7 @@ public class ResourceType {
 
         while (quantity <= minQuantity){
             try{
-                sleep(5);
-                //return false;
+                sleep(10);
             }
             catch (InterruptedException e){
                 Thread.currentThread().interrupt();
@@ -93,8 +91,6 @@ public class ResourceType {
         return true;
 
     }
-
-
 
     public synchronized boolean produceSync() {
 

@@ -8,14 +8,10 @@ import java.awt.*;
 
 public class DataPanel extends JTable {
 
-    View view;
-
-    public DataPanel(View view){
-        this.view = view;
+    public DataPanel(){
 
         String[] columnNamesData = {"Dato", "Valor"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
-        JScrollPane scrollPane = new JScrollPane(this);
         tableModel.addRow(new Object[]{"Total Resources", 0});
         tableModel.addRow(new Object[]{"Total Consumers", 0});
         tableModel.addRow(new Object[]{"Total Producers", 0});

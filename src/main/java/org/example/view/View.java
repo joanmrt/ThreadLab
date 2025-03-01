@@ -30,7 +30,7 @@ public class View extends JFrame implements Runnable {
     public View(Controller controller){
         this.controller = controller;
         this.controlPanel = new ControlPanel();
-        this.dataPanel = new DataPanel(this);
+        this.dataPanel = new DataPanel();
         this.configurationPanel = new ConfigurationPanel();
         this.consumerPanel = new ConsumerPanel();
         this.resourcePanel = new ResourcePanel();
@@ -226,6 +226,14 @@ public class View extends JFrame implements Runnable {
             tableModelConsumer.addRow(rowData);
         }
 
+        //Add DataPanel
+
+        DefaultTableModel tableModelData = (DefaultTableModel) this.dataPanel.getModel();
+        tableModelData.setValueAt(arrayListResources.size(),0,1);
+        tableModelData.setValueAt(arrayListProducer.size(),1,1);
+        tableModelData.setValueAt(arrayListConsumer.size(),2,1);
+        tableModelData.setValueAt(arrayListConsumer.size()+arrayListProducer.size(),3,1);
+
     }
 
     private void updateTables(ModelDTO modelDTO){
@@ -245,8 +253,6 @@ public class View extends JFrame implements Runnable {
             tableModelProducer.setValueAt(producer.getLifeCycles(),producer.getId()-1,6);
             tableModelProducer.setValueAt(producer.getStartTime(),producer.getId()-1,7);
             tableModelProducer.setValueAt(producer.getEndTime(),producer.getId()-1,8);
-
-
         }
     }
 
@@ -290,6 +296,12 @@ public class View extends JFrame implements Runnable {
 
         DefaultTableModel tableModelProducer = (DefaultTableModel) this.producerPanel.getModel();
         tableModelProducer.setRowCount(0);
+
+        DefaultTableModel tableModelData = (DefaultTableModel) this.dataPanel.getModel();
+        tableModelData.setValueAt(0,0,1);
+        tableModelData.setValueAt(0,1,1);
+        tableModelData.setValueAt(0,2,1);
+        tableModelData.setValueAt(0,3,1);
     }
 
     @Override
@@ -308,13 +320,5 @@ public class View extends JFrame implements Runnable {
         }
         clearTables();
 
-    }
-
-    public Controller getController() {
-        return controller;
-    }
-
-    public ConfigurationPanel getConfigurationPanel() {
-        return configurationPanel;
     }
 }

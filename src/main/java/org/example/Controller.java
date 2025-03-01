@@ -49,7 +49,7 @@ public class Controller {
     }
 
     public void play(){
-        this.getModel().play();
+        this.model.play();
     }
 
     public void stop(){

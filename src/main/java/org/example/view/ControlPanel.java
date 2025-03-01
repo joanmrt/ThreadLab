@@ -14,6 +14,5 @@ public class ControlPanel extends JPanel {
     public ControlPanel(){
         this.play = new Play();
         this.stop = new Stop();
-
     }
 }

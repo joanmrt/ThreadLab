@@ -1,11 +1,14 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.model.Consumer;
 import org.example.model.Producer;
 import org.example.model.ResourceType;
 
 import java.util.ArrayList;
-
+@Getter
+@Setter
 public class ModelDTO {
     private ArrayList<Consumer> consumerList;
     private ArrayList<Producer> producersList;
@@ -17,21 +20,5 @@ public class ModelDTO {
         this.producersList = producersList;
         this.resourceTypesList = resourceTypesList;
         this.isRunning = isRunning;
-    }
-
-    public ArrayList<Consumer> getConsumerList() {
-        return consumerList;
-    }
-
-    public ArrayList<Producer> getProducersList() {
-        return producersList;
-    }
-
-    public ArrayList<ResourceType> getResourceTypesList() {
-        return resourceTypesList;
-    }
-
-    public boolean isRunning() {
-        return isRunning;
     }
 }
