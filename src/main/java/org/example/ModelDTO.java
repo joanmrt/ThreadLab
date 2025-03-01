@@ -1,5 +1,9 @@
 package org.example;
 
+import org.example.model.Consumer;
+import org.example.model.Producer;
+import org.example.model.ResourceType;
+
 import java.util.ArrayList;
 
 public class ModelDTO {

@@ -2,9 +2,11 @@ package org.example;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.model.Model;
+import org.example.view.View;
 
 import javax.swing.*;
-import javax.swing.table.TableColumnModel;
+
 @Getter
 @Setter
 public class Controller {

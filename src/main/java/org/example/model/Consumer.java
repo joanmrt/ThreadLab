@@ -1,62 +1,71 @@
-package org.example;
+package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.model.Model;
+import org.example.model.ResourceType;
 
 import java.util.Random;
 
 import static java.lang.Thread.sleep;
+
 @Getter
 @Setter
-public class Producer implements Runnable{
+public class Consumer implements Runnable{
 
     private Model model;
     private int id;
     private String state;
     private long startDelay;
-    private long produceDelay;
-    private int timesProduced = 0;
+    private long consumeDelay;
+    private int timesConsumed = 0;
     private int lifeCycles = 0;
     private long startTime;
     private long endTime;
     private ResourceType boundResource;
-    public Producer(Model model, int id, ResourceType resourceType, long startDelay){
-        this.boundResource = resourceType;
-        this.model = model;
-        this.id = id;
-        this.startDelay =startDelay;
 
+    public Consumer(Model model, int id, ResourceType resourceType, long startDelay){
+        this.model = model;
+        this.boundResource = resourceType;
+        this.id = id;
+        this.startDelay = startDelay;
     }
 
-    private void produce() {
+    private void consume() {
         boolean isSync = this.model.getConfigurationPropertiesDTO().isGuardedRegion();
+        boolean isProtected = this.model.getConfigurationPropertiesDTO().isProtectNegativeStock();
         try {
-            boolean produced;
-            if (isSync){
-                produced = this.boundResource.produceSync();
+            boolean consumed;
+            if (isSync && isProtected){
+                consumed = this.boundResource.consumeSyncProtected();
             }
-            else {
-                produced = this.boundResource.produce();
+            else if (!isSync && isProtected){
+                consumed = this.boundResource.consumeUnsyncProtected();
+            } else if (isSync && !isProtected) {
+                consumed = this.boundResource.consumeSyncUnprotected();
+            } else {
+                consumed = this.boundResource.consumeUnsyncUnprotected();
             }
-            if (produced){
-                timesProduced++;
+            if (consumed){
+                timesConsumed++;
             }
 
-            sleep(randomProducerDelay());
+            sleep(randomConsumerDelay());
             lifeCycles++;
         } catch (InterruptedException e) {
             state = "INTERRUPTED";
             throw new RuntimeException(e);
         }
     }
-    private int randomProducerDelay(){
-        int min = this.model.getConfigurationPropertiesDTO().getProducerDelayMin();
-        int max = this.model.getConfigurationPropertiesDTO().getProducerDelayMax();
+
+    private int randomConsumerDelay(){
+        int min = this.model.getConfigurationPropertiesDTO().getConsumerDelayMin();
+        int max = this.model.getConfigurationPropertiesDTO().getConsumerDelayMax();
 
         if (max >= min){
             Random random = new Random();
             int result = random.nextInt(max - min + 1) + min;
-            produceDelay = result;
+            consumeDelay = result;
             return result;
         }
         // Valor por defecto por si el maximo es menor al minimo
@@ -73,23 +82,24 @@ public class Producer implements Runnable{
             throw new RuntimeException(e);
         }
 
-        //Incrementar numero de productores asociados al recurso
-        //this.boundResource.setProducerNum(this.boundResource.getProducerNum() + 1);
 
-        state = "RUNNING";
         if (this.model.getConfigurationPropertiesDTO().isLifeCyclesEnabled()){
+            state = "RUNNING";
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
-                produce();
+
+                consume();
             }
         }
 
         else{
             state = "RUNNING";
             while (this.model.isRunning()){
-                produce();
+                consume();
             }
         }
 
+
     }
+
 
 }

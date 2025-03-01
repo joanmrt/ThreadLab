@@ -1,7 +1,8 @@
-package org.example;
+package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.model.Model;
 
 import static java.lang.Thread.sleep;
 @Getter

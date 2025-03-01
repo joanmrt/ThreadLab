@@ -1,7 +1,11 @@
-package org.example;
+package org.example.view;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.*;
+import org.example.model.Consumer;
+import org.example.model.Producer;
+import org.example.model.ResourceType;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
