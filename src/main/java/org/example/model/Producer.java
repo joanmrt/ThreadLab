@@ -2,8 +2,6 @@ package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.model.Model;
-import org.example.model.ResourceType;
 
 import java.util.Random;
 
@@ -32,13 +30,18 @@ public class Producer implements Runnable{
 
     private void produce() {
         boolean isSync = this.model.getConfigurationPropertiesDTO().isGuardedRegion();
+        boolean isProtected = this.model.getConfigurationPropertiesDTO().isProtectNegativeStock();
         try {
             boolean produced;
-            if (isSync){
-                produced = this.boundResource.produceSync();
+            if (isSync && isProtected){
+                produced = this.boundResource.produceSyncProtected();
             }
-            else {
-                produced = this.boundResource.produce();
+            else if (!isSync && isProtected){
+                produced = this.boundResource.produceUnsyncProtected();
+            } else if (isSync && !isProtected) {
+                produced = this.boundResource.produceSyncUnprotected();
+            } else {
+                produced = this.boundResource.produceUnsyncUnprotected();
             }
             if (produced){
                 timesProduced++;

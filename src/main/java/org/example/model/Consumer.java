@@ -2,8 +2,6 @@ package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.model.Model;
-import org.example.model.ResourceType;
 
 import java.util.Random;
 

@@ -2,9 +2,6 @@ package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.model.Model;
-
-import static java.lang.Thread.sleep;
 @Getter
 @Setter
 public class ResourceType {
@@ -72,24 +69,47 @@ public class ResourceType {
         return true;
 
     }
-    public boolean produce() {
-        quantity = quantity + 1;
-        checkOverflow();
-        updateState();
-        return true;
-    }
 
-    public synchronized boolean produceSync() {
+    public synchronized boolean produceSyncProtected(){
 
-        if (quantity < maxQuantity){
-            quantity = quantity + 1;
-            checkOverflow();
+        if (quantity >= maxQuantity) {
+
+            quantity++;
             checkOverflow();
             updateState();
             notify();
             return true;
         }
         return false;
+    }
+
+    public synchronized boolean produceSyncUnprotected(){
+        quantity++;
+        checkOverflow();
+        updateState();
+        return true;
+
+    }
+
+    public boolean produceUnsyncUnprotected() {
+        quantity++;
+        checkOverflow();
+        updateState();
+        return true;
+
+    }
+
+    public boolean produceUnsyncProtected() {
+
+        if (quantity >= maxQuantity){
+            return false;
+        }
+
+        quantity++;
+        checkOverflow();
+        updateState();
+        return true;
+
     }
 
 

@@ -6,8 +6,6 @@ import org.example.*;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import static java.lang.Thread.sleep;
 @Getter
 @Setter
 public class Model {
@@ -90,8 +88,7 @@ public class Model {
         int max = this.getConfigurationPropertiesDTO().getStartDelayMax();
         if (max >= min){
             Random random = new Random();
-            long result = random.nextInt(max - min + 1) + min;
-            return result;
+            return random.nextInt(max - min + 1) + min;
         }
 
         return 300;
