@@ -10,6 +10,8 @@ import org.example.model.ResourceType;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import static java.awt.GridBagConstraints.*;
@@ -26,6 +28,8 @@ public class View extends JFrame implements Runnable {
     private ConsumerPanel consumerPanel;
     private ResourcePanel resourcePanel;
     private ProducerPanel producerPanel;
+    private Timer timer;
+    private int timeCounter;
 
     public View(Controller controller){
         this.controller = controller;
@@ -132,6 +136,7 @@ public class View extends JFrame implements Runnable {
                 addTables();
                 Thread updateValuesThread = new Thread(this);
                 updateValuesThread.start();
+                startTimer();
             }
 
             else {
@@ -153,6 +158,7 @@ public class View extends JFrame implements Runnable {
         JButton stopButton = this.controlPanel.getStop();
         stopButton.addActionListener(e -> {
             this.controller.stop();
+            stopTimer();
         });
         c.weightx = 1;
         c.weighty = 0;
@@ -161,8 +167,6 @@ public class View extends JFrame implements Runnable {
         c.fill = HORIZONTAL;
         c.anchor = CENTER;
         this.controlPanel.add(stopButton,c);
-
-
 
         // Añadir Panel de botones al panel principal
         c.weightx = 0.1;
@@ -177,7 +181,6 @@ public class View extends JFrame implements Runnable {
 
         // Actualizar maquetacion
         this.pack();
-
 
         // Definir tamaño final de ventana y hacerlo visible
         this.setBounds(500,200, 1000,800);
@@ -254,6 +257,7 @@ public class View extends JFrame implements Runnable {
         updateResources(modelDTO);
         updateConsumers(modelDTO);
         updateProducers(modelDTO);
+        updateDataPanel();
     }
 
     private void updateProducers(ModelDTO modelDTO) {
@@ -301,6 +305,12 @@ public class View extends JFrame implements Runnable {
         }
     }
 
+    private void updateDataPanel(){
+        DefaultTableModel tableModelData = (DefaultTableModel) this.dataPanel.getModel();
+        String timerString = formatTime(timeCounter);
+        tableModelData.setValueAt(timerString,4,1);
+    }
+
     private void clearTables(){
         DefaultTableModel tableModelResource = (DefaultTableModel) this.resourcePanel.getModel();
         tableModelResource.setRowCount(0);
@@ -316,6 +326,35 @@ public class View extends JFrame implements Runnable {
         tableModelData.setValueAt(0,1,1);
         tableModelData.setValueAt(0,2,1);
         tableModelData.setValueAt(0,3,1);
+    }
+
+    private void startTimer(){
+        if (timer != null && timer.isRunning()) {
+            return;
+        }
+        timer = new Timer(1, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timeCounter++;
+            }
+        });
+        timer.start();
+    }
+
+    private void stopTimer(){
+        if (timer != null) {
+            timer.stop();
+            timeCounter = 0;
+        }
+    }
+
+    private static String formatTime(int milliseconds) {
+        int minutes = (milliseconds % 3600000) / 60000;  // 60000 ms in a minute
+        int seconds = (milliseconds % 60000) / 1000;  // 1000 ms in a second
+        int ms = milliseconds % 1000;  // Remaining milliseconds
+
+        // Format the time as mm:ss.SSS
+        return String.format("%02d:%02d.%03d", minutes, seconds, ms);
     }
 
     @Override

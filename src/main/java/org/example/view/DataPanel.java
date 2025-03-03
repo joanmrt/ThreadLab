@@ -16,7 +16,7 @@ public class DataPanel extends JTable {
         tableModel.addRow(new Object[]{"Total Consumers", 0});
         tableModel.addRow(new Object[]{"Total Producers", 0});
         tableModel.addRow(new Object[]{"Active Threads", 0});
-        tableModel.addRow(new Object[]{"Total Time (ms)", 0});
+        tableModel.addRow(new Object[]{"Total Time (ms)", "00:00:00"});
 
         this.setModel(tableModel);
 
