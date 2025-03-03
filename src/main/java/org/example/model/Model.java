@@ -16,9 +16,6 @@ public class Model {
     private ArrayList<Consumer> consumerList;
     private ArrayList<Producer> producersList;
     private ArrayList<ResourceType> resourceTypesList;
-    private Consumer consumer;
-    private Producer producer;
-    private ResourceType resourceType;
     private ConfigurationPropertiesDTO configurationPropertiesDTO;
 
     private boolean running = false;
@@ -26,8 +23,6 @@ public class Model {
     public Model(Controller controller){
         this.controller = controller;
         this.configurationPropertiesDTO = new ConfigurationPropertiesDTO();
-        this.resourceType = new ResourceType(this, 1);
-
     }
 
     public void play(){
@@ -38,23 +33,19 @@ public class Model {
         createProducers();
         // Crear Consumers ''
         createConsumers();
-
     }
 
     private void createConsumers() {
         consumerList = new ArrayList<>();
-        int id = 1;
-
 
         for (int i = 0; i < configurationPropertiesDTO.getConsumerNumber(); i++){
             long startDelay = pickRandomStartDelay();
-            ResourceType resourceType1 = pickRandomResource();
-            Consumer consumer = new Consumer(this, id, resourceType1, startDelay);
+            ResourceType resourceType = pickRandomResource();
+            Consumer consumer = new Consumer(this, i + 1, resourceType, startDelay);
             consumerList.add(consumer);
 
             //Incrementar numero de consumidores asociados al recurso
-            resourceType1.setConsumerNum(resourceType1.getConsumerNum() + 1);
-            id++;
+            resourceType.increaseConsumerNum();
             Thread consumerThread = new Thread(consumer);
 
             consumerThread.start();
@@ -63,33 +54,27 @@ public class Model {
 
     private void createProducers() {
         producersList = new ArrayList<>();
-        int id = 1;
-
 
         for (int i = 0; i < configurationPropertiesDTO.getProducerNumber(); i++){
             long startDelay = pickRandomStartDelay();
-            ResourceType resourceType1 = pickRandomResource();
-            Producer producer1 = new Producer(this, id, resourceType1, startDelay);
+            ResourceType resourceType = pickRandomResource();
+            Producer producer1 = new Producer(this, i + 1, resourceType, startDelay);
             producersList.add(producer1);
 
             //Incrementar numero de productores asociados al recurso
-            resourceType1.setProducerNum(resourceType1.getProducerNum() + 1);
+            resourceType.increaseProducerNum();
 
-            id++;
             Thread producerThread = new Thread(producer1);
             producerThread.start();
-
         }
     }
 
     private void createResources(){
         resourceTypesList = new ArrayList<>();
-        int id = 1;
 
         for (int i = 0; i < configurationPropertiesDTO.getResourceTypes(); i++){
-            ResourceType resourceType1 = new ResourceType(this, id);
+            ResourceType resourceType1 = new ResourceType(this, i + 1);
             resourceTypesList.add(resourceType1);
-            id++;
         }
 
     }
@@ -116,7 +101,6 @@ public class Model {
         this.running = false;
     }
     public ModelDTO sendDTO(){
-        ModelDTO modelDTO = new ModelDTO(this.consumerList,this.producersList,this.resourceTypesList,this.running);
-        return modelDTO;
+        return new ModelDTO(this.consumerList, this.producersList, this.resourceTypesList, this.running);
     }
 }

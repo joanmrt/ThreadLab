@@ -44,8 +44,7 @@ public class Controller {
     }
 
     public ModelDTO getModelDTO(){
-        ModelDTO modelDTO = this.model.sendDTO();
-        return modelDTO;
+        return this.model.sendDTO();
     }
 
     public void play(){

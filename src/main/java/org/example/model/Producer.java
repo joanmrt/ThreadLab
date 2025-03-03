@@ -75,9 +75,6 @@ public class Producer implements Runnable{
             throw new RuntimeException(e);
         }
 
-        //Incrementar numero de productores asociados al recurso
-        //this.boundResource.setProducerNum(this.boundResource.getProducerNum() + 1);
-
         state = "RUNNING";
         if (this.model.getConfigurationPropertiesDTO().isLifeCyclesEnabled()){
             for (int i=0; i<this.model.getConfigurationPropertiesDTO().getCycles(); i++){
@@ -91,7 +88,5 @@ public class Producer implements Runnable{
                 produce();
             }
         }
-
     }
-
 }

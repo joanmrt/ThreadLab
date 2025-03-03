@@ -51,9 +51,12 @@ public class View extends JFrame implements Runnable {
         c.weighty = 1;
         c.gridy = 0;
         c.gridx = 0;
-        c.gridheight=3;
+        c.gridheight=2;
         c.fill = BOTH;
-        this.add(new JScrollPane(this.dataPanel), c);
+        JScrollPane scrollPane = new JScrollPane(this.dataPanel);
+        scrollPane.getViewport().setBackground(new Color(255, 219, 100));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(154, 66, 35),1));
+        this.add(scrollPane, c);
 
         //Conifg Panel
 
@@ -63,7 +66,10 @@ public class View extends JFrame implements Runnable {
         c.gridx = 1;
         c.gridheight=3;
         c.fill = BOTH;
-        this.add(new JScrollPane(this.configurationPanel), c);
+        scrollPane = new JScrollPane(this.configurationPanel);
+        scrollPane.getViewport().setBackground(new Color(255, 219, 100));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(154, 66, 35),1));
+        this.add(scrollPane, c);
 
         // ResourcesPanel
 
@@ -73,7 +79,10 @@ public class View extends JFrame implements Runnable {
         c.gridx = 2;
         c.gridheight=1;
         c.fill = BOTH;
-        this.add(new JScrollPane(this.resourcePanel), c);
+        scrollPane = new JScrollPane(this.resourcePanel);
+        scrollPane.getViewport().setBackground(new Color(255, 219, 100));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(154, 66, 35),1));
+        this.add(scrollPane, c);
 
         // Consumer Panel
 
@@ -83,7 +92,10 @@ public class View extends JFrame implements Runnable {
         c.gridx = 2;
         c.gridheight=1;
         c.fill = BOTH;
-        this.add(new JScrollPane(this.consumerPanel), c);
+        scrollPane = new JScrollPane(this.consumerPanel);
+        scrollPane.getViewport().setBackground(new Color(255, 219, 100));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(154, 66, 35),1));
+        this.add(scrollPane, c);
 
         // Producer Panel
 
@@ -93,7 +105,10 @@ public class View extends JFrame implements Runnable {
         c.gridx = 2;
         c.gridheight=1;
         c.fill = BOTH;
-        this.add(new JScrollPane(this.producerPanel), c);
+        scrollPane = new JScrollPane(this.producerPanel);
+        scrollPane.getViewport().setBackground(new Color(255, 219, 100));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(154, 66, 35),1));
+        this.add(scrollPane, c);
 
         // Panel de botones
 
@@ -102,7 +117,6 @@ public class View extends JFrame implements Runnable {
         // Button Play
         JButton playButton = this.controlPanel.getPlay();
         playButton.addActionListener(e -> {
-            System.out.println("Play button clicked!");
             ModelDTO modelDTO = this.controller.getModelDTO();
 
             if (!modelDTO.isRunning()){
@@ -126,39 +140,39 @@ public class View extends JFrame implements Runnable {
 
         });
 
-        c.weightx = 0;
+        c.weightx = 1;
         c.weighty = 0;
-        c.gridx = 0;
         c.gridy = 0;
+        c.gridx = 0;
         c.ipady = 20;
-        c.fill = NONE;
-        c.anchor = LAST_LINE_START;
+        c.fill = HORIZONTAL;
+        c.anchor = CENTER;
         this.controlPanel.add(playButton, c);
 
         // Button Stop
         JButton stopButton = this.controlPanel.getStop();
         stopButton.addActionListener(e -> {
-            System.out.println("Stop button clicked!");
-
-            System.out.println(Integer.parseInt(this.getConfigurationPanel().getValueAt(0,1).toString()));
             this.controller.stop();
-            //clearTables();
         });
-        c.gridy = 0;
-        c.gridx = 1;
+        c.weightx = 1;
+        c.weighty = 0;
+        c.gridy = 1;
+        c.gridx = 0;
+        c.fill = HORIZONTAL;
+        c.anchor = CENTER;
         this.controlPanel.add(stopButton,c);
 
 
 
         // Añadir Panel de botones al panel principal
-        c.weightx = 1;
+        c.weightx = 0.1;
         c.weighty = 0;
         c.gridx = 0;
-        c.gridy = 3;
-        c.gridwidth = 5;
+        c.gridy = 2;
+        c.gridwidth = 1;
         c.ipady = 0;
-        c.fill = NONE;
-        c.anchor = LAST_LINE_START;
+        c.fill = BOTH;
+        c.anchor = CENTER;
         this.add(this.controlPanel, c);
 
         // Actualizar maquetacion
@@ -306,7 +320,6 @@ public class View extends JFrame implements Runnable {
 
     @Override
     public void run() {
-        DefaultTableModel tableModelData = (DefaultTableModel) this.dataPanel.getModel();
         ModelDTO modelDTO = this.controller.getModelDTO();
 
         while (modelDTO.isRunning()){

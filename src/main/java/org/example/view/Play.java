@@ -7,6 +7,6 @@ public class Play extends JButton {
     public Play(){
         this.setText("Play");
         this.setBackground(new Color(157, 210, 70));
-
+        this.setFont(new Font("Arial", Font.BOLD, 15));
     }
 }

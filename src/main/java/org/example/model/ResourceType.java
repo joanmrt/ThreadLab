@@ -10,17 +10,12 @@ import static java.lang.Thread.sleep;
 public class ResourceType {
     private Model model;
     private int id;
-
-    private int quantity = 0;
+    private volatile int quantity = 0;
     private int maxQuantity;
     private int minQuantity;
-
     private int consumerNum = 0;
-
     private int producerNum = 0;
-
     private int underflow = 0;
-
     private int overflow = 0;
     private String state;
 
@@ -30,15 +25,6 @@ public class ResourceType {
         this.maxQuantity = this.model.getConfigurationPropertiesDTO().getMaxQuantity();
         this.minQuantity = this.model.getConfigurationPropertiesDTO().getMinQuantity();
         this.state = "Normal";
-
-    }
-
-    public boolean produce() throws InterruptedException {
-        System.out.println("quantity produce: " + quantity);
-        quantity = quantity + 1;
-        checkOverflow();
-        updateState();
-        return true;
     }
 
     public synchronized boolean consumeSyncProtected(){
@@ -76,13 +62,8 @@ public class ResourceType {
 
     public boolean consumeUnsyncProtected() {
 
-        while (quantity <= minQuantity){
-            try{
-                sleep(10);
-            }
-            catch (InterruptedException e){
-                Thread.currentThread().interrupt();
-            }
+        if (quantity <= minQuantity){
+            return false;
         }
 
         quantity--;
@@ -91,14 +72,18 @@ public class ResourceType {
         return true;
 
     }
+    public boolean produce() {
+        quantity = quantity + 1;
+        checkOverflow();
+        updateState();
+        return true;
+    }
 
     public synchronized boolean produceSync() {
 
-        checkOverflow();
         if (quantity < maxQuantity){
-            //sleep(20);
-
             quantity = quantity + 1;
+            checkOverflow();
             checkOverflow();
             updateState();
             notify();
@@ -109,7 +94,6 @@ public class ResourceType {
 
 
     private void checkOverflow(){
-
         if (quantity > maxQuantity){
             System.out.println("quantity overflow: " + quantity);
             overflow ++;
@@ -120,7 +104,6 @@ public class ResourceType {
 
         if (quantity < minQuantity){
             System.out.println("quantity underflow: " + quantity);
-
             underflow++;
         }
     }
@@ -135,5 +118,11 @@ public class ResourceType {
         }
     }
 
+    public void increaseConsumerNum(){
+        consumerNum++;
+    }
 
+    public void increaseProducerNum(){
+        producerNum++;
+    }
 }

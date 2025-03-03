@@ -10,8 +10,13 @@ public class ProducerPanel extends JTable {
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         this.setModel(tableModel);
 
-        this.getTableHeader().setBackground(new Color(248, 110, 110));
+        // Customization
+        this.getTableHeader().setBackground(new Color(0, 133, 109));
+        this.getTableHeader().setForeground(Color.WHITE);
         this.setRowHeight(30);
         this.setMinimumSize(new Dimension(300,200));
+        this.setDefaultRenderer(Object.class, new CustomTableRenderer());
+        this.setGridColor(new Color(154, 66, 35));
+        this.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
     }
 }

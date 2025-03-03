@@ -10,7 +10,7 @@ public class DataPanel extends JTable {
 
     public DataPanel(){
 
-        String[] columnNamesData = {"Dato", "Valor"};
+        String[] columnNamesData = {"Data", "Value"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
         tableModel.addRow(new Object[]{"Total Resources", 0});
         tableModel.addRow(new Object[]{"Total Consumers", 0});
@@ -21,8 +21,12 @@ public class DataPanel extends JTable {
         this.setModel(tableModel);
 
         // Customizacion
-        this.getTableHeader().setBackground(new Color(248, 110, 240));
-        this.setRowHeight(30);
+        this.getTableHeader().setBackground(new Color(0, 41, 133));
+        this.getTableHeader().setForeground(Color.WHITE);
+        this.setRowHeight(40);
         this.setMinimumSize(new Dimension(300,200));
+        this.setDefaultRenderer(Object.class, new CustomTableRenderer());
+        this.setGridColor(new Color(154, 66, 35));
+        this.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
     }
 }

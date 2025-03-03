@@ -8,12 +8,16 @@ public class ConsumerPanel extends JTable {
     public ConsumerPanel(){
         String[] columnNamesData = {"Consumer ID", "Bound Resource", "Status", "Start Delay", "Consume Delay", "Times consumed", "Life Cycles", "Start Time", "End Time"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNamesData, 0);
-        JScrollPane scrollPane = new JScrollPane(this);
 
         this.setModel(tableModel);
 
-        this.getTableHeader().setBackground(new Color(110, 128, 248));
+        //Customization
+        this.getTableHeader().setBackground(new Color(133, 0, 0));
+        this.getTableHeader().setForeground(Color.WHITE);
         this.setRowHeight(30);
         this.setMinimumSize(new Dimension(300,200));
+        this.setDefaultRenderer(Object.class, new CustomTableRenderer());
+        this.setGridColor(new Color(154, 66, 35));
+        this.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
     }
 }
